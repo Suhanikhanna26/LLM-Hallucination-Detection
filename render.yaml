@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: llm-hallucination-detector
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT --workers 1
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: DEMO_MODE
+        value: "false"
+      - key: GEMINI_MODEL
+        value: gemini-3.5-flash
+      - key: NLI_BATCH_SIZE
+        value: "8"
+      - key: DATA_DIR
+        value: /var/data/data
+      - key: UPLOAD_DIR
+        value: /var/data/uploads
+      - key: GEMINI_API_KEY
+        sync: false
+    disk:
+      name: detector-data
+      mountPath: /var/data
+      sizeGB: 2
